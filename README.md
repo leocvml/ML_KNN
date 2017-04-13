@@ -10,6 +10,11 @@
   
 
 # how to use kNN.py
-    **import kNN **
-    __group,labels = kNN.createDataSet()__
-    __kNN.classify0([0,0],group,labels,3)__
+1.import kNN module  
+2.read data set  
+3.input you want predict data  
+
+    import kNN**        
+    group,labels = kNN.createDataSet()  
+    kNN.classify0([0,0],group,labels,3)  
+
