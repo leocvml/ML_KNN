@@ -3,7 +3,7 @@
  KNN
   
   
-  1.calculate the distance between input and the current data
+  1.calculate the distance between input and the current data \n
   2.sort the distances in increasing order
   3.take k item with lowest distances to input
   4.finnd majority class among these item
