@@ -9,7 +9,7 @@
 5.return majority class as out predict for the class of input  
   
 
-#how to use kNN.py
+# how to use kNN.py
     import kNN
     group,labels = kNN.createDataSet()
     kNN.classify0([0,0],group,labels,3)
