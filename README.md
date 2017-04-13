@@ -10,6 +10,6 @@
   
 
 # how to use kNN.py
-    import kNN
-    group,labels = kNN.createDataSet()
-    kNN.classify0([0,0],group,labels,3)
+    _import kNN_
+    _group,labels = kNN.createDataSet()_
+    _kNN.classify0([0,0],group,labels,3)_
