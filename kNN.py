@@ -34,5 +34,35 @@ def file2matrix(filename):
         classLabelVector.append(int(listFromLine[-1]))
         index += 1
     return returnMat,classLabelVector
+def show_data2img(DataMat,DataLabels,datatype1,datatype2):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.scatter(DataMat[:,datatype1],DataMat[:,datatype2],15.0 * array(DataLabels) , 15.0 * array(DataLabels))
+    plt.show()
+
+def autoNorm(dataSet):
+    minVals = dataSet.min(0)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+    normDataSet = zeros(shape(dataSet))
+    m = dataSet.shape[0]
+    normDataSet = dataSet - tile(minVals , (m,1))
+    normDataSet = normDataSet / tile(ranges ,(m,1))
+    return normDataSet , ranges , minVals
+
+def datingClassTest():
+    hotRatio = 0.99
+    datingDataMat , datingLabels = file2matrix('datingTestSet.txt')
+    normMat , ranges ,minVals = autoNorm(datingDataMat)
+    m = normMat.shape[0]
+    
+    numTestVecs = int(m * hotRatio)
+    errorCount = 0.0
+    for i in range(numTestVecs):
+        classfierResult = classify0(normMat[i,:],normMat[numTestVecs:m,:],datingLabels[numTestVecs:m],3)
+        print ("No.%d the classifier came back with: %d , the real answer is : %d" %(i+1,classfierResult , datingLabels[i]))
+        if(classfierResult != datingLabels[i]):
+            errorCount += 1.0
+    print("the total error rate is : %f" % (errorCount / float(numTestVecs)))
     
     
