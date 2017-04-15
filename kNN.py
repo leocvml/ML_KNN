@@ -1,4 +1,6 @@
 from numpy import *
+import matplotlib
+import matplotlib.pyplot as plt
 import operator
 
 def createDataSet():
