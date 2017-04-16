@@ -1,6 +1,9 @@
 # ML_KNN   
  my first ML_Algorithm
- KNN
+ KNN:  
+ **the algorithm has to carry around the full dataSet  ,implies a large amount of storage**  
+ **need to calculate the distance measurement for every piece of data in database**  
+ **doesn't give you any idea of the underlying strcture of the data**
   
 1.calculate the distance between input and the current data  
 2.sort the distances in increasing order  
