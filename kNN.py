@@ -2,12 +2,13 @@ from numpy import *
 import matplotlib
 import matplotlib.pyplot as plt
 import operator
-
+import os 
 def createDataSet():
     group = array(([1.0,1.1],[1.0,1.0],[0,0],[0,0.1]))
     labels = ['A','A','B','B']
     return group,labels
-def classify0(idx,dataSet,labels,k):
+
+def classify0(idx,dataSet,labels,k):   
     dataSetSize = dataSet.shape[0]
     diffMat = tile(idx,(dataSetSize,1)) - dataSet
     sqDiffMat = diffMat**2
@@ -46,9 +47,9 @@ def autoNorm(dataSet):
     minVals = dataSet.min(0)
     maxVals = dataSet.max(0)
     ranges = maxVals - minVals
-    normDataSet = zeros(shape(dataSet))
-    m = dataSet.shape[0]
-    normDataSet = dataSet - tile(minVals , (m,1))
+    normDataSet = zeros(shape(dataSet))    #shape(dataSet) = 1000 , 3   # 0 , 0 , 0 .....
+    m = dataSet.shape[0] 
+    normDataSet = dataSet - tile(minVals , (m,1))   #(m,1) = 1000 ,1  tile => copy minVals 1000 times
     normDataSet = normDataSet / tile(ranges ,(m,1))
     return normDataSet , ranges , minVals
 
@@ -57,14 +58,60 @@ def datingClassTest():
     datingDataMat , datingLabels = file2matrix('datingTestSet.txt')
     normMat , ranges ,minVals = autoNorm(datingDataMat)
     m = normMat.shape[0]
-    
     numTestVecs = int(m * hotRatio)
-    errorCount = 0.0
-    for i in range(numTestVecs):
-        classfierResult = classify0(normMat[i,:],normMat[numTestVecs:m,:],datingLabels[numTestVecs:m],3)
-        print ("No.%d the classifier came back with: %d , the real answer is : %d" %(i+1,classfierResult , datingLabels[i]))
-        if(classfierResult != datingLabels[i]):
-            errorCount += 1.0
+    errorCount = 0.0        
+    for i in range(numTestVecs):        
+         classfierResult = classify0(normMat[i,:],normMat[numTestVecs:m,:],datingLabels[numTestVecs:m],3)
+         
+         print ("No.%d the classifier came back with: %d , the real answer is : %d" %(i+1,classfierResult , datingLabels[i]))
+         if(classfierResult != datingLabels[i]):
+             errorCount += 1.0
     print("the total error rate is : %f" % (errorCount / float(numTestVecs)))
     
+def classifyPerson():
+    resultList = ['not at all' , 'in small doses','in large doses']
+    percentTats = float(input("percentage of time spent playing video games?"))
+    ffMiles = float(input("frequent flier miles earned per year"))
+    iceCream = float(input("liters of ice cream consumed per year?"))
+    datingDataMat , datingLabels = file2matrix('datingTestSet.txt')
+    normMat , ranges ,minVals = autoNorm(datingDataMat)
+    inArr = array([ffMiles , percentTats , iceCream])
+    classifierResult = classify0((inArr - minVals) / ranges , normMat , datingLabels , 3)
+    print("you will probably like this person",resultList[classifierResult - 1])
     
+    
+def img2vector(filename):
+    returnVect = zeros((1,1024))
+    fr = open(filename)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVect[0,32*i+j] = int(lineStr[j])
+    return returnVect
+
+def handwritingClassTest():
+    hwLabels =[]
+    trainingFileList = os.listdir('/Users/leo/Desktop/python/trainingDigits')
+    m = len(trainingFileList)
+    trainingMat = zeros((m,1024))
+    for i in range (1,m):
+        fileNameStr = trainingFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = (fileStr.split('_')[0])
+        hwLabels.append(classNumStr)
+        trainingMat[i,:] = img2vector('trainingDigits/%s' % fileNameStr)
+    testFileList = os.listdir('/Users/leo/Desktop/python/testDigits')
+    errorCount = 0.0
+    mTest = len(testFileList)
+    for i in range(1,mTest):
+        fileNameStr = testFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = (fileStr.split('_')[0])
+        vectorUnderTest = img2vector('testDigits/%s' % fileNameStr)
+        classifierResult = classify0(vectorUnderTest , trainingMat ,hwLabels ,3)
+        print ("the classifier came back with %s the real answer is : %s" %(classifierResult , classNumStr))
+
+        if(classifierResult != classNumStr):
+            errorCount +=1.0
+    print("\n total number of errors is %d"%errorCount)
+    print("\n total error rate is : %f" %(errorCount / float(mTest)))
