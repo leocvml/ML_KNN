@@ -53,6 +53,10 @@
 ``import kNN``  
 ``kNN.handwritingClassTest()``  
 
+# Summary  
+kNN  => large computations and large memory  
+**kd_tree** allows you make this smaller and take fewer computations  
+
 
 
 
